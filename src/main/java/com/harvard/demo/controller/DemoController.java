@@ -10,4 +10,15 @@ public class DemoController {
     public String getHome() {
         return "<h1>Welcome to Spring Security!</h1>";
     }
+
+    @GetMapping("/user")
+    public String getUser() {
+        return "<h1>Welcome to User!</h1>";
+    }
+
+    @GetMapping("/admin")
+    public String getAdmin() {
+        return "<h1>Welcome to Admin!</h1>";
+    }
+
 }
