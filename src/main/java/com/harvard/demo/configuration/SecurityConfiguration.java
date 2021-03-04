@@ -8,15 +8,23 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.sql.DataSource;
+
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private final DataSource dataSource;
+
+    public SecurityConfiguration(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().
-                withUser("harvard").password("harvard12345").roles("USER").
-                and().
-                withUser("admin").password("admin12345").roles("ADMIN");
+        auth.jdbcAuthentication()
+                .dataSource(dataSource)
+                .usersByUsernameQuery("select username, password, enabled from users where username = ?")
+                .authoritiesByUsernameQuery("select username, authority from authorities where username = ?");
     }
 
     @Override
